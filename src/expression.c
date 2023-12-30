@@ -28,20 +28,17 @@ void expression_delete(Expression * expression) {
 
 // -------- Utils --------
 
-char * strrev(char * str) {
-  if (!str || ! *str) return str;
+char * strrev(const char * str) {
+  int size = strlen(str);
+  char * rev = (char *)malloc((size + 1) * sizeof(char));
+  
+  rev[0] = '\0';
 
-  int i = strlen(str) - 1, j = 0;
-
-  char ch;
-  while (i > j) {
-    ch = str[i];
-    str[i] = str[j];
-    str[j] = ch;
-    i--;
-    j++;
+  for (int i = size - 1; i >= 0; i--) {
+    strncat(rev, &str[i], 1);
   }
-  return str;
+
+  return rev;
 }
 
 int is_operator(char * c) {
