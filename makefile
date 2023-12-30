@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -I src
-SOURCES = main.c src/expression.c
+SOURCES = main.c src/stack.c src/expression.c
 OUTPUT = output
 
 all: $(OUTPUT)

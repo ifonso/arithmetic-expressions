@@ -1,13 +1,11 @@
-#include "expression.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "expression.h"
+
 int main() {
-  // Testes
-  Expression e = create_expression(ADD, 1, 2);
-  print_expression(&e);
-  printf("= %d\n", evaluate_expression(&e));
+  char * expression = "(1+2)*(3+4)";
+  printf("%s\n", infix_to_prefix(expression));
 
   return 0;
 }

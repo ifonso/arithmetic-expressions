@@ -1,6 +1,8 @@
 #ifndef EXPRESSION_H_
 #define EXPRESSION_H_
 
+#include "stack.h"
+
 /** 
  * @brief Enum representando as possíveis operações para uma expressão.
 **/
@@ -9,44 +11,48 @@ typedef enum {
   SUB, // Subtração
   MUL, // Multiplicação
   DIV, // Divisão
-} Operation;
+  NIL, // Nenhuma operação
+} Operator;
 
 /** 
- * @brief Struct representando uma expressão aritimética.
+ * @brief Enum usado para representar o lado de um valor em uma expressão.
+**/
+typedef enum {
+  LHS, // Left-hand side
+  RHS, // Right-hand side
+} Side;
+
+// --------------------------- Structs ---------------------------
+
+/** 
+ * @brief Struct representando um operando de uma expressão.
 **/
 typedef struct {
-  Operation op;
+  unsigned int value;
 
-  unsigned int lhs;  // left-hand side operand of the expression
-  unsigned int rhs;  // right-hand side operand of the expression
+  Side vs;     // Lado do valor
+  Operator op; // Operação
 
+} Operand;
+
+/** 
+ * @brief Struct que armazena uma expressão aritimética em uma stack.
+**/
+typedef struct {
+  Stack * stack; // Stack que armazena a expressão
+
+  char * infix;
+  char * prefix;
 } Expression;
 
 // --------------------- Function declarations ---------------------
 
-/**
- * @brief Cria uma expressão simples com os parâmetros dados.
- * 
- * @param op A operação da expressão.
- * @param lhs O operando do lado esquerdo da expressão.
- * @param rhs O operando do lado direito da expressão.
- * @return `Expression` A expressão criada.
-**/
-Expression create_expression(Operation op, unsigned int lhs, unsigned int rhs);
+Expression * expression_create();
+void expression_delete(Expression * expression);
 
-/**
- * @brief Avalia a expressão dada.
- * 
- * @param expression Um ponteiro para a expressão a ser avaliada.
- * @return `int` O resultado da expressão.
-**/
-int evaluate_expression(Expression * expression);
+void expression_push_operand(Expression * expression, unsigned int value, Side vs, Operator op);
+// int evaluate_expression(Expression * expression);
 
-/**
- * @brief Imprime a expressão aritimética dada.
- * 
- * @param expression Um ponteiro para a estrutura de expressão a ser impressa.
-**/
-void print_expression(Expression * expression);
+char * infix_to_prefix(char * exp);
 
 #endif /* EXPRESSION_H_ */
