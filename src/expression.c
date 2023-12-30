@@ -6,26 +6,6 @@
 #include <string.h>
 #include <ctype.h>
 
-// -------- Lifecycle --------
-
-Expression * expression_create() {
-  Expression * expression = (Expression *) malloc(sizeof(Expression));
-
-  if (expression == NULL) {
-    perror("error while allocating expression.\n");
-    exit(EXIT_FAILURE);
-  }
-
-  expression->stack = create_stack();
-
-  return expression;
-}
-
-void expression_delete(Expression * expression) {
-  delete_stack(expression->stack);
-  free(expression);
-}
-
 // -------- Utils --------
 
 char * strrev(const char * str) {
@@ -71,18 +51,3 @@ char * infix_to_prefix(char * exp) {
 }
 
 // -------- Operations --------
-
-void expression_push_operand(Expression * expression, unsigned int value, Side vs, Operator op) {
-  if (expression->stack->top != NULL && op != NIL) {
-    perror("error: base expression needs to be a value");
-    exit(EXIT_FAILURE);
-  }
-
-  Operand * operand = (Operand *)malloc(sizeof(Operand));
-
-  operand->value = value;
-  operand->vs = vs;
-  operand->op = op;
-
-  push(expression->stack, operand);
-}
