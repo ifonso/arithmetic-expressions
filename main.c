@@ -5,11 +5,13 @@
 #include "AST.h"
 
 int main() {
-  char * expression = "(1+2)*(3+4)";
-  char * postfix = shunting_yard(expression);
+  char * expression = "(3+4)*2";
+
+  TNode * ast = node_create_from_infix(expression);
 
   printf("Infix: %s\n", expression);
-  printf("Postfix: %s\n", postfix);
+
+  printf("Result: %d\n", eval(ast));
 
   return 0;
 }

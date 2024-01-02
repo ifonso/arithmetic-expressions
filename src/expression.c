@@ -49,8 +49,6 @@ int precedence(const char * c) {
   }
 }
 
-// -------- Functions --------
-
 char * shunting_yard(char * infix) {
   Stack * stack = create_stack();
   char * output = (char *)malloc(sizeof(char)*MAX_OUT_SIZE);

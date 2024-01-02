@@ -1,5 +1,6 @@
 #include "AST.h"
 #include "stack.h"
+#include "expression.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -62,6 +63,96 @@ unsigned int eval(TNode * node) {
 
 // -------- expression utility functions --------
 
-TNode * node_create_from_postfix(char * prefix) {
-  return NULL;
+TNode * node_create_from_infix(char * infix) {
+  Stack * stack = create_stack();  // Char operators stack
+  Stack * output = create_stack(); // AST Stack
+
+  for (int i = 0; i < strlen(infix); i++) {
+
+    if (isdigit(infix[i])) {
+      // Create number node
+      TNode * num_node = node_create_number(infix[i] - '0');
+      // pushing it to output then continue
+      push(output, (void *)num_node);
+      continue;
+    }
+
+    // Allocate a copy char
+    char * c = malloc(sizeof(char) * 2);
+    c[0] = '\0';
+    strncpy(c, &infix[i], 1);
+
+    if (infix[i] == '(') {
+      // Pushing the copy to operator stack
+      push(stack, (void *)c);
+      continue;
+    }
+
+    if (is_operator(&infix[i])) {
+      // while is not the highest precedence on stack
+      while(
+        stack->size != 0 &&
+        *(char *)peek(stack) != '(' &&
+        precedence((char *)peek(stack)) >= precedence(&infix[i])
+      ) {
+        // Getting operator
+        Operator op = get_operator((char *)pop(stack));
+        // Create a node with the last ones in output
+        if (output->size < 2) {
+          perror("Invalid expression");
+          exit(1);
+        }
+        
+        TNode * rhs = (TNode *)pop(output);
+        TNode * lhs = (TNode *)pop(output);
+        TNode * node = node_create_operation(op, lhs, rhs);
+        // Adding new node to output
+        push(output, (void *)node);
+      }
+      // pushing operator to stack
+      push(stack, (void *)c);
+      continue;
+    }
+
+    if (infix[i] == ')') {
+      while (
+        stack->size > 0 && 
+        *(char *)peek(stack) != '('
+      ) {
+        // Getting operator
+        Operator op = get_operator((char *)pop(stack));
+        // Create a node with the last ones in output
+        if (output->size < 2) {
+          perror("Invalid expression");
+          exit(1);
+        }
+
+        TNode * rhs = (TNode *)pop(output);
+        TNode * lhs = (TNode *)pop(output);
+        TNode * node = node_create_operation(op, lhs, rhs);
+        // Adding new node to output
+        push(output, (void *)node);
+      }
+      // removing '('
+      pop(stack);
+    }
+  }
+
+  while (stack->size > 0) {
+    // Getting operator
+    Operator op = get_operator((char *)pop(stack));
+    // Create a node with the last ones in output
+    if (output->size < 2) {
+      perror("Invalid expression");
+      exit(1);
+    }
+
+    TNode * rhs = (TNode *)pop(output);
+    TNode * lhs = (TNode *)pop(output);
+    TNode * node = node_create_operation(op, lhs, rhs);
+    // Adding new node to output
+    push(output, (void *)node);
+  }
+
+  return (TNode *)output->top->value;
 }

@@ -3,3 +3,8 @@
 
 # builds
 output
+
+# vscode
+/.vscode
+/main.dSYM
+main
