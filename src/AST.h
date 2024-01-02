@@ -41,11 +41,11 @@ TNode * node_create_number(unsigned int value);
 TNode * node_create_operation(Operator op, TNode * left, TNode * right);
 TNode * node_create_from_infix(char * infix);
 
-void destroy_ast(TNode * node);
-
 unsigned int eval(TNode * node);
 
-void print_infix(TNode * node);
-void print_prefix(TNode * node);
+char * node_get_infix(TNode * node);
+char * node_get_prefix(TNode * node);
+
+void destroy_ast(TNode * node);
 
 #endif /* AST_H_ */

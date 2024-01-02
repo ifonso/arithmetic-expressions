@@ -7,6 +7,8 @@
 #include <string.h>
 #include <ctype.h>
 
+#define MAX_OUT_SIZE 256
+
 // -------- Utils --------
 
 Operator get_operator(const char * c) {
@@ -157,39 +159,52 @@ TNode * node_create_from_infix(char * infix) {
   return (TNode *)output->top->value;
 }
 
-void print_infix(TNode * node) {
+char * node_get_infix(TNode * node) {
+  char * infix = malloc(sizeof(char) * MAX_OUT_SIZE);
+  infix[0] = '\0';
+
   if (node->type == AST_NUMBER) {
-    printf("%d", node->value.value);
-    return;
+    sprintf(infix, "%d", node->value.value);
+    return infix;
   }
 
-  printf("(");
-  print_infix(node->value.branch.left);
+  char * left = node_get_infix(node->value.branch.left);
+  char * right = node_get_infix(node->value.branch.right);
 
   switch (node->value.branch.op) {
-    case ADD: printf("+"); break;
-    case SUB: printf("-"); break;
-    case MUL: printf("*"); break;
-    case DIV: printf("/"); break;
+    case ADD: sprintf(infix, "(%s+%s)", left, right); break;
+    case SUB: sprintf(infix, "(%s-%s)", left, right); break;
+    case MUL: sprintf(infix, "(%s*%s)", left, right); break;
+    case DIV: sprintf(infix, "(%s/%s)", left, right); break;
   }
 
-  print_infix(node->value.branch.right);
-  printf(")");
+  free(left);
+  free(right);
+
+  return infix;
 }
 
-void print_prefix(TNode * node) {
+char * node_get_prefix(TNode * node) {
+  char * prefix = malloc(sizeof(char) * MAX_OUT_SIZE);
+  prefix[0] = '\0';
+
   if (node->type == AST_NUMBER) {
-    printf("%d", node->value.value);
-    return;
+    sprintf(prefix, "%d", node->value.value);
+    return prefix;
   }
 
+  char * left = node_get_prefix(node->value.branch.left);
+  char * right = node_get_prefix(node->value.branch.right);
+
   switch (node->value.branch.op) {
-    case ADD: printf("+"); break;
-    case SUB: printf("-"); break;
-    case MUL: printf("*"); break;
-    case DIV: printf("/"); break;
+    case ADD: sprintf(prefix, "+%s%s", left, right); break;
+    case SUB: sprintf(prefix, "-%s%s", left, right); break;
+    case MUL: sprintf(prefix, "*%s%s", left, right); break;
+    case DIV: sprintf(prefix, "/%s%s", left, right); break;
   }
-  
-  print_prefix(node->value.branch.left);
-  print_prefix(node->value.branch.right);
+
+  free(left);
+  free(right);
+
+  return prefix;
 }

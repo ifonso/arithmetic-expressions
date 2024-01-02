@@ -11,12 +11,10 @@ int main() {
   TNode * ast = node_create_from_infix(expression);
 
   // Printing AST expression in infix notation
-  print_prefix(ast);
-  printf("\n");
+  printf("%s\n", node_get_infix(ast));
 
   // Printing AST expression in prefix notation
-  print_infix(ast);
-  printf("\n");
+  printf("%s\n", node_get_prefix(ast));
 
   // Evaluating AST expression
   printf("Result: %d\n", eval(ast));
