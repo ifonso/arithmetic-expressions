@@ -51,51 +51,56 @@ int precedence(const char * c) {
 
 char * shunting_yard(char * infix) {
   Stack * stack = create_stack();
-  char * output = (char *)malloc(sizeof(char)*MAX_OUT_SIZE);
+  char * output = (char *)malloc(sizeof(char) * MAX_OUT_SIZE);
   output[0] = '\0';
 
-  for (int i = 0; i < strlen(infix); i++) {
+  // Inverte a string infixa 
+  char * reversed_infix = strrev(infix);
 
-    if (isdigit(infix[i])) {
-      strncat(output, &infix[i], 1);
+  for (int i = 0; i < strlen(reversed_infix); i++) {
+    if (isdigit(reversed_infix[i])) {
+      strncat(output, &reversed_infix[i], 1);
       continue;
     }
 
     char * c = malloc(sizeof(char) * 2);
     c[0] = '\0';
-    strncpy(c, &infix[i], 1);
+    strncpy(c, &reversed_infix[i], 1);
 
-    if (infix[i] == '(') {
-      push(stack, (void *)c);
-
-    } else if (infix[i] == ')') {
+    if (reversed_infix[i] == ')') {
+        push(stack, (void *)c);
+        
+    } else if (reversed_infix[i] == '(') {
       while (
-        stack->size > 0 && 
-        *(char *)peek(stack) != '('
+        stack->size > 0 &&
+        *(char *)peek(stack) != ')'
       ) {
         strcat(output, (char *)pop(stack));
       }
-      // removing (
-      pop(stack);
-
+      // remove ')'
+      pop(stack); 
     } else {
-      while(
+      while (
         stack->size != 0 &&
-        *(char *)peek(stack) != '(' &&
-        precedence((char *)peek(stack)) >= precedence(c)
+        *(char *)peek(stack) != ')' &&
+        precedence((char *)peek(stack)) > precedence(c)
       ) {
-        strcat(output, (char *)pop(stack)); 
+        strcat(output, (char *)pop(stack));
       }
-
       push(stack, (void *)c);
     }
   }
-  
+
   while (stack->size > 0) {
     strcat(output, (char *)pop(stack));
   }
 
   delete_stack(stack);
 
-  return output;
+  // Inverte o resultado final para obter a expressão prefixa correta
+  char * prefix_expression = strrev(output);
+  free(output);
+  free(reversed_infix);
+
+  return prefix_expression;
 }
