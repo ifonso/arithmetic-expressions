@@ -156,3 +156,40 @@ TNode * node_create_from_infix(char * infix) {
 
   return (TNode *)output->top->value;
 }
+
+void print_infix(TNode * node) {
+  if (node->type == AST_NUMBER) {
+    printf("%d", node->value.value);
+    return;
+  }
+
+  printf("(");
+  print_infix(node->value.branch.left);
+
+  switch (node->value.branch.op) {
+    case ADD: printf("+"); break;
+    case SUB: printf("-"); break;
+    case MUL: printf("*"); break;
+    case DIV: printf("/"); break;
+  }
+
+  print_infix(node->value.branch.right);
+  printf(")");
+}
+
+void print_prefix(TNode * node) {
+  if (node->type == AST_NUMBER) {
+    printf("%d", node->value.value);
+    return;
+  }
+
+  switch (node->value.branch.op) {
+    case ADD: printf("+"); break;
+    case SUB: printf("-"); break;
+    case MUL: printf("*"); break;
+    case DIV: printf("/"); break;
+  }
+  
+  print_prefix(node->value.branch.left);
+  print_prefix(node->value.branch.right);
+}

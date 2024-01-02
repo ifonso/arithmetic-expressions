@@ -45,4 +45,7 @@ void destroy_ast(TNode * node);
 
 unsigned int eval(TNode * node);
 
+void print_infix(TNode * node);
+void print_prefix(TNode * node);
+
 #endif /* AST_H_ */
