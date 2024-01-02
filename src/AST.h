@@ -1,7 +1,7 @@
 #ifndef AST_H_
 #define AST_H_
 
-typedef struct Node Node;
+typedef struct TNode TNode;
 typedef struct Branch Branch;
 
 
@@ -22,11 +22,11 @@ typedef enum {
 struct Branch {
   Operator op;
 
-  struct Node * left;
-  struct Node * right;
+  struct TNode * left;
+  struct TNode * right;
 };
 
-struct Node {
+struct TNode {
   Type type;
 
   union  {
@@ -37,11 +37,12 @@ struct Node {
 
 // --------------------- Function declarations ---------------------
 
-Node * node_create_number(unsigned int value);
-Node * node_create_operation(Operator op, Node * left, Node * right);
+TNode * node_create_number(unsigned int value);
+TNode * node_create_operation(Operator op, TNode * left, TNode * right);
+TNode * node_create_from_postfix(char * prefix);
 
-void destroy_ast(Node * node);
+void destroy_ast(TNode * node);
 
-unsigned int eval(Node * node);
+unsigned int eval(TNode * node);
 
 #endif /* AST_H_ */

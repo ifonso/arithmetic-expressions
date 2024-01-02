@@ -1,10 +1,13 @@
 #include "expression.h"
 #include "stack.h"
+#include "AST.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+
+#define MAX_OUT_SIZE 256
 
 // -------- Utils --------
 
@@ -21,7 +24,7 @@ char * strrev(const char * str) {
   return rev;
 }
 
-int is_operator(char * c) {
+int is_operator(const char * c) {
   switch (*c) {
     case '+':
     case '-':
@@ -33,7 +36,7 @@ int is_operator(char * c) {
   }
 }
 
-int precedence(char * c) {
+int precedence(const char * c) {
   switch (*c) {
     case '+':
     case '-':
@@ -46,8 +49,55 @@ int precedence(char * c) {
   }
 }
 
-char * infix_to_prefix(char * exp) {
-  return NULL;
-}
+// -------- Functions --------
 
-// -------- Operations --------
+char * shunting_yard(char * infix) {
+  Stack * stack = create_stack();
+  char * output = (char *)malloc(sizeof(char)*MAX_OUT_SIZE);
+  output[0] = '\0';
+
+  for (int i = 0; i < strlen(infix); i++) {
+
+    if (isdigit(infix[i])) {
+      strncat(output, &infix[i], 1);
+      continue;
+    }
+
+    char * c = malloc(sizeof(char) * 2);
+    c[0] = '\0';
+    strncpy(c, &infix[i], 1);
+
+    if (infix[i] == '(') {
+      push(stack, (void *)c);
+
+    } else if (infix[i] == ')') {
+      while (
+        stack->size > 0 && 
+        *(char *)peek(stack) != '('
+      ) {
+        strcat(output, (char *)pop(stack));
+      }
+      // removing (
+      pop(stack);
+
+    } else {
+      while(
+        stack->size != 0 &&
+        *(char *)peek(stack) != '(' &&
+        precedence((char *)peek(stack)) >= precedence(c)
+      ) {
+        strcat(output, (char *)pop(stack)); 
+      }
+
+      push(stack, (void *)c);
+    }
+  }
+  
+  while (stack->size > 0) {
+    strcat(output, (char *)pop(stack));
+  }
+
+  delete_stack(stack);
+
+  return output;
+}

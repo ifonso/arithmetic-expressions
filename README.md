@@ -19,7 +19,7 @@ $ make
 ## Compilar (gcc)
 No terminal executo seguinte comando para compilar o arquivo.
 ```shell
-$ gcc -I src main.c src/expression.c src/stack.c -o output
+$ gcc -I src main.c src/expression.c src/stack.c src/AST.c -o output
 ```
 
 --- 

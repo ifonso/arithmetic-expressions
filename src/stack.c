@@ -62,6 +62,9 @@ void * pop(Stack * stack) {
 }
 
 void * peek(Stack * stack) {
-  if (stack == NULL || stack->top || NULL) return NULL;
+  if (stack == NULL || stack->top == NULL) {
+    perror("error while peeking from stack: stack is empty.\n");
+    exit(EXIT_FAILURE);
+  }
   return stack->top->value;
 }

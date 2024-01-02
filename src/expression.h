@@ -3,6 +3,6 @@
 
 // --------------------- Function declarations ---------------------
 
-char * infix_to_prefix(char * exp);
+char * shunting_yard(char * infix);
 
 #endif /* EXPRESSION_H_ */
