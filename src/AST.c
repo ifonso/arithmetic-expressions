@@ -159,6 +159,41 @@ TNode * node_create_from_infix(char * infix) {
   return (TNode *)output->top->value;
 }
 
+TNode * node_create_from_prefix(char * prefix) {
+  char * exp = strrev(prefix);
+  Stack * output = create_stack(); // AST Stack
+
+  for (int i = 0; i < strlen(exp); i++) {
+
+    if (isdigit(exp[i])) {
+      // Create number node
+      TNode * num_node = node_create_number(exp[i] - '0');
+      // pushing it to output then continue
+      push(output, (void *)num_node);
+      continue;
+    }
+
+    if (is_operator(&exp[i])) {
+      // Getting operator
+      Operator op = get_operator(&exp[i]);
+      // Create a node with the last ones in output
+      if (output->size < 2) {
+        perror("Invalid expression");
+        exit(1);
+      }
+      
+      TNode * lhs = (TNode *)pop(output);
+      TNode * rhs = (TNode *)pop(output);
+      TNode * node = node_create_operation(op, lhs, rhs);
+      // Adding new node to output
+      push(output, (void *)node);
+      continue;
+    }
+  }
+
+  return (TNode *)output->top->value;
+}
+
 char * node_get_infix(TNode * node) {
   char * infix = malloc(sizeof(char) * MAX_OUT_SIZE);
   infix[0] = '\0';

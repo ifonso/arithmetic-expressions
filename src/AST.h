@@ -40,6 +40,7 @@ struct TNode {
 TNode * node_create_number(unsigned int value);
 TNode * node_create_operation(Operator op, TNode * left, TNode * right);
 TNode * node_create_from_infix(char * infix);
+TNode * node_create_from_prefix(char * prefix);
 
 unsigned int eval(TNode * node);
 

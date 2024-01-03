@@ -54,7 +54,7 @@ char * shunting_yard(char * infix) {
   char * output = (char *)malloc(sizeof(char) * MAX_OUT_SIZE);
   output[0] = '\0';
 
-  // Inverte a string infixa 
+  // Inverte a string infixa
   char * reversed_infix = strrev(infix);
 
   for (int i = 0; i < strlen(reversed_infix); i++) {
@@ -68,8 +68,8 @@ char * shunting_yard(char * infix) {
     strncpy(c, &reversed_infix[i], 1);
 
     if (reversed_infix[i] == ')') {
-        push(stack, (void *)c);
-        
+      push(stack, (void *)c);
+
     } else if (reversed_infix[i] == '(') {
       while (
         stack->size > 0 &&
@@ -78,7 +78,7 @@ char * shunting_yard(char * infix) {
         strcat(output, (char *)pop(stack));
       }
       // remove ')'
-      pop(stack); 
+      pop(stack);
     } else {
       while (
         stack->size != 0 &&
