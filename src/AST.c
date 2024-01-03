@@ -220,26 +220,5 @@ char * node_get_infix(TNode * node) {
 }
 
 char * node_get_prefix(TNode * node) {
-  char * prefix = malloc(sizeof(char) * MAX_OUT_SIZE);
-  prefix[0] = '\0';
-
-  if (node->type == AST_NUMBER) {
-    sprintf(prefix, "%d", node->value.value);
-    return prefix;
-  }
-
-  char * left = node_get_prefix(node->value.branch.left);
-  char * right = node_get_prefix(node->value.branch.right);
-
-  switch (node->value.branch.op) {
-    case ADD: sprintf(prefix, "+%s%s", left, right); break;
-    case SUB: sprintf(prefix, "-%s%s", left, right); break;
-    case MUL: sprintf(prefix, "*%s%s", left, right); break;
-    case DIV: sprintf(prefix, "/%s%s", left, right); break;
-  }
-
-  free(left);
-  free(right);
-
-  return prefix;
+  return shunting_yard(node_get_infix(node));
 }
