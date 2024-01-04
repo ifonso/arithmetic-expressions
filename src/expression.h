@@ -1,12 +1,36 @@
 #ifndef EXPRESSION_H_
 #define EXPRESSION_H_
 
+#include "stack.h"
+
+// --------------------------- Expression ---------------------------
+
+typedef struct LNode LNode;
+typedef struct Expression Expression;
+typedef enum ExpressionType ExpressionType;
+
+enum ExpressionType {
+  INFIX,
+  PREFIX
+};
+
+struct LNode {
+  char term;
+  struct LNode * next;
+};
+
+struct Expression {
+  ExpressionType type;
+  LNode * head;
+  unsigned int size;
+};
+
 // --------------------- Function declarations ---------------------
 
-char * shunting_yard(char * infix);
+Expression * expression_create_infix(const char * exp);
 
-int is_operator(const char * c);
-int precedence(const char * c);
-char * strrev(const char * str);
+void expression_convert_to_prefix(Expression * exp);
+void expression_destroy(Expression * exp);
+void expression_print(Expression * exp);
 
 #endif /* EXPRESSION_H_ */
